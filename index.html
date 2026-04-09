@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Pokédex</title>
+
+
+
+
+<style>
+body {
+    font-family: 'Segoe UI', Arial;
+    margin: 0;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: white;
+}
+
+
+
+
+header {
+    background: #ff3f34;
+    padding: 20px;
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+
+
+
+section {
+    margin: 20px;
+}
+
+
+
+
+.pokedex {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+
+
+
+/* LISTA */
+#lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 15px;
+}
+
+
+
+
+/* CARD */
+.card {
+    background: #dfe6e9;
+    color: #222;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+
+
+
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+
+
+
+    height: 140px;
+    padding: 10px;
+}
+
+
+
+
+.card:hover {
+    transform: scale(1.08);
+}
+
+
+
+
+.card img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
+
+
+
+/* DETALHES */
+#detalhes {
+    padding: 25px 30px;
+    border-radius: 20px;
+    min-height: 320px;
+    position: relative;
+    overflow: hidden;
+    transition: 0.5s;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing: border-box;
+}
+
+
+
+
+#detalhes .conteudo h2 {
+    font-size: 2em;
+    font-weight: 900;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+    text-transform: uppercase;
+}
+
+
+
+
+#detalhes .conteudo img {
+    width: 140px;
+    margin-bottom: 15px;
+    filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.4));
+}
+
+
+
+
+#detalhes .conteudo p {
+    margin: 8px 0;
+    font-weight: 600;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+
+
+
+/* Lista das stats */
+#detalhes .barra {
+    background: white;  /* fundo branco sempre */
+    border-radius: 12px;
+    margin: 10px 0 18px;
+    overflow: hidden;
+    height: 18px;
+    width: 100%;
+    position: relative;
+}
+
+
+
+
+#detalhes .barra div {
+    height: 100%;
+    border-radius: 12px;
+    transition: width 0.4s ease-in-out;
+    background: #555555; /* preenchimento cinza escuro fixo */
+}
+
+
+
+
+/* Texto dentro das barras - estatística */
+#detalhes .barra span {
+    position: absolute;
+    right: 8px;
+    top: 0;
+    bottom: 0;
+    line-height: 18px;
+    font-weight: 700;
+    color: #222;
+    text-shadow: none;
+}
+
+
+
+
+/* Tipo do Pokémon */
+#detalhes .tipo {
+    font-weight: 700;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+}
+
+
+
+
+/* PARTICULAS */
+.particulas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+
+
+
+.bolha, .fogo-particula {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.4;
+}
+
+
+
+
+/* TIPOS PARTICULAS */
+.water .bolha {
+    background: #74b9ff;
+    animation: subir 4s infinite;
+}
+
+
+
+
+.fire .fogo-particula {
+    background: orange;
+    animation: fogoSubindo 1s infinite alternate;
+}
+
+
+
+
+.grass .bolha {
+    background: #55efc4;
+    animation: subir 3s infinite;
+}
+
+
+
+
+.electric .bolha {
+    background: yellow;
+    animation: piscar 0.5s infinite alternate;
+}
+
+
+
+
+/* animações */
+@keyframes subir {
+    from { transform: translateY(100%); }
+    to { transform: translateY(-100%); }
+}
+
+
+
+
+@keyframes fogoSubindo {
+    from { transform: translateY(0); }
+    to { transform: translateY(-20px); }
+}
+
+
+
+
+@keyframes piscar {
+    from { opacity: 0.2; }
+    to { opacity: 1; }
+}
+
+
+
+
+/* INPUT */
+input {
+    padding: 12px;
+    width: 100%;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+}
+
+
+.ver-mais {
+    grid-column: 1/-1;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background: #ff3f34;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+.fade-in {
+    animation: fade 0.5s ease;
+}
+
+
+@keyframes fade {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+
+
+
+
+<body>
+
+
+
+
+<header>Pokédex</header>
+
+
+
+
+<section>
+    <h2>Buscar Pokémon</h2>
+    <input type="text" id="filtro" placeholder="Digite o nome..." oninput="filtrarPokemon()">
+</section>
+
+
+
+
+<section class="pokedex">
+    <div>
+        <h2>Lista</h2>
+        <div id="lista"></div>
+    </div>
+
+
+
+
+    <div>
+        <h2>Detalhes</h2>
+        <div id="detalhes">Clique em um Pokémon</div>
+    </div>
+</section>
+
+
+
+
+```html
+<script>
+
+
+let pokemons = [];
+let listaAtual = [];
+let limite = 30;
+let carregando = false;
+
+
+/* CARREGAR LISTA */
+function carregarLista() {
+    fetch("https://pokeapi.co/api/v2/pokemon?limit=1025")
+        .then(res => res.json())
+        .then(data => {
+
+
+            pokemons = data.results.map((p, index) => {
+                const id = index + 1;
+
+
+                return {
+                    id,
+                    name: p.name,
+                    img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
+                };
+            });
+
+
+            listaAtual = pokemons;
+            mostrarLista();
+        });
+}
+
+
+/* MOSTRAR LISTA */
+function mostrarLista() {
+    const lista = document.getElementById("lista");
+
+
+    const visiveis = listaAtual.slice(0, limite);
+
+
+    lista.innerHTML = visiveis.map(poke => `
+        <div class="card fade-in" onclick="mostrarDetalhes(${poke.id})">
+            <img src="${poke.img}" alt="${poke.name}">
+            <p>${poke.name}</p>
+        </div>
+    `).join("");
+
+
+    // BOTÃO VER MAIS
+    if (listaAtual.length > limite) {
+        lista.innerHTML += `
+            <button onclick="verMais()" class="ver-mais">
+                Ver mais
+            </button>
+        `;
+    }
+}
+
+
+/* VER MAIS */
+function verMais() {
+    limite += 30;
+    mostrarLista();
+}
+
+
+/* SCROLL INFINITO */
+window.addEventListener("scroll", () => {
+    if (carregando) return;
+
+
+    const scrollTop = window.scrollY;
+    const alturaTela = window.innerHeight;
+    const alturaTotal = document.body.offsetHeight;
+
+
+    if (scrollTop + alturaTela >= alturaTotal - 100) {
+        if (limite < listaAtual.length) {
+            carregando = true;
+
+
+            setTimeout(() => {
+                limite += 30;
+                mostrarLista();
+                carregando = false;
+            }, 300);
+        }
+    }
+});
+
+
+/* FILTRO */
+function filtrarPokemon() {
+    const texto = document.getElementById("filtro").value.toLowerCase();
+
+
+    limite = 30;
+
+
+    listaAtual = pokemons.filter(p =>
+        p.name.includes(texto)
+    );
+
+
+    mostrarLista();
+}
+
+
+/* CORES */
+function corTipo(tipo) {
+    const cores = {
+        fire: "#ff3f34",
+        water: "#0984e3",
+        grass: "#00b894",
+        electric: "#fdcb6e",
+        psychic: "#e84393",
+        ice: "#00cec9",
+        dragon: "#6c5ce7",
+        dark: "#2d3436",
+        fairy: "#ff77ff",
+        normal: "#b2bec3",
+        fighting: "#d63031",
+        flying: "#74b9ff",
+        poison: "#6c5ce7",
+        ground: "#e17055",
+        rock: "#b2bec3",
+        bug: "#00b894",
+        ghost: "#636e72",
+        steel: "#95a5a6"
+    };
+    return cores[tipo] || "#555";
+}
+
+
+/* DETALHES (SEU ORIGINAL COMPLETO) */
+function mostrarDetalhes(id) {
+    fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+        .then(res => res.json())
+        .then(poke => {
+            const tipos = poke.types.map(t => t.type.name);
+            const detalhes = document.getElementById("detalhes");
+
+
+            detalhes.className = "";
+            tipos.forEach(t => detalhes.classList.add(t));
+
+
+            const cor1 = corTipo(tipos[0]);
+            const cor2 = corTipo(tipos[1] || tipos[0]);
+
+
+            let particulas = "";
+            for (let i = 0; i < 15; i++) {
+                particulas += `<div class="${tipos.includes('fire') ? 'fogo-particula' : 'bolha'}"
+                    style="left:${Math.random()*100}%; top:${Math.random()*100}%; width:10px; height:10px;"></div>`;
+            }
+
+
+            const stats = poke.stats.map(s => {
+                const valor = s.base_stat;
+                const pct = Math.min(valor, 100);
+                return `
+                    <p>${s.stat.name}</p>
+                    <div class="barra">
+                        <div style="width:${pct}%;"></div>
+                        <span>${valor}</span>
+                    </div>
+                `;
+            }).join("");
+
+
+            detalhes.innerHTML = `
+                <div class="particulas">${particulas}</div>
+
+
+                <div class="conteudo">
+                    <h2>${poke.name.toUpperCase()}</h2>
+                    <img src="${poke.sprites.front_default}" alt="${poke.name}">
+                    <p class="tipo"><strong>Tipo:</strong> ${tipos.join(", ")}</p>
+                    ${stats}
+                </div>
+            `;
+
+
+            detalhes.style.background = `linear-gradient(135deg, ${cor1}, ${cor2})`;
+        });
+}
+
+
+carregarLista();
+
+
+</script>
+
+</body>
+</html>
+
+
